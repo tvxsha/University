@@ -2,6 +2,7 @@
 A comprehensive web-based university management system built with Flask and Python that streamlines academic operations for administrators, faculty, students, and parents.
 
 **Key Features**
+
 1)Authentication & Authorization
 
 2)JWT-based secure authentication
@@ -57,6 +58,7 @@ A comprehensive web-based university management system built with Flask and Pyth
 3)Track attendance records with detailed statistics
 
 **Technical Stack**
+
 Layer	Technology
 
 Backend	Flask, SQLAlchemy
