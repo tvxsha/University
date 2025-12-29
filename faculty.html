@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(16, 185, 129, 0.3);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+            color: #10b981;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .logout-btn {
+            background: #10b981;
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logout-btn:hover {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 50px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            color: #fff;
+            border-bottom-color: #10b981;
+        }
+
+        .tab:hover {
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .card h2 {
+            margin-bottom: 25px;
+            color: #fff;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.5);
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #51cf66;
+            border: 1px solid rgba(16, 185, 129, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 18px;
+        }
+
+        .subject-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+        }
+
+        .subject-section h3 {
+            color: #10b981;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .navbar {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1> FACULTY PORTAL</h1>
+        <div class="user-info">
+            <span id="userName">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Sign Out</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('students')">My Students</button>
+            <button class="tab" onclick="showTab('grades')">Manage Grades</button>
+            <button class="tab" onclick="showTab('attendance')">Mark Attendance</button>
+            <button class="tab" onclick="showTab('content')">Course Content</button>
+        </div>
+
+        <div id="alert"></div>
+
+        <!-- Students Tab -->
+        <div id="students" class="tab-content active">
+            <div class="card">
+                <h2>Students in My Subjects</h2>
+                <div id="studentsList" class="loading">Loading students...</div>
+            </div>
+        </div>
+
+        <!-- Grades Tab -->
+        <div id="grades" class="tab-content">
+            <div class="card">
+                <h2>Add/Update Grades</h2>
+                <form id="gradeForm">
+                    <div class="form-group">
+                        <label>Select Subject</label>
+                        <select id="gradeSubject" required onchange="loadStudentsForSubject()">
+                            <option value="">-- Select Subject --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Student</label>
+                        <select id="gradeStudent" required>
+                            <option value="">-- Select Student --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Marks (0-100)</label>
+                        <input type="number" id="marks" required min="0" max="100" step="0.1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Grade</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Finalize Grades</h2>
+                <p style="margin-bottom: 15px; color: rgba(255,255,255,0.7);">After finalizing, grades cannot be edited unless re-evaluation is approved.</p>
+                <div class="form-group">
+                    <label>Select Subject to Finalize</label>
+                    <select id="finalizeSubject">
+                        <option value="">-- Select Subject --</option>
+                    </select>
+                </div>
+                <button class="btn btn-danger" onclick="finalizeGrades()">Finalize Grades</button>
+            </div>
+        </div>
+
+        <!-- Attendance Tab -->
+        <div id="attendance" class="tab-content">
+            <div class="card">
+                <h2>Mark Attendance</h2>
+                <form id="attendanceForm">
+                    <div class="form-group">
+                        <label>Select Subject</label>
+                        <select id="attendanceSubject" required onchange="loadStudentsForAttendance()">
+                            <option value="">-- Select Subject --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Student</label>
+                        <select id="attendanceStudent" required>
+                            <option value="">-- Select Student --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="attendanceDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="attendanceStatus" required>
+                            <option value="present">Present</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Mark Attendance</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Course Content Tab -->
+        <div id="content" class="tab-content">
+            <div class="card">
+                <h2>Upload Course Content</h2>
+                <form id="contentForm">
+                    <div class="form-group">
+                        <label>Select Subject</label>
+                        <select id="contentSubject" required>
+                            <option value="">-- Select Subject --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="contentTitle" required placeholder="e.g., Week 1 - Introduction">
+                    </div>
+                    <div class="form-group">
+                        <label>Content (Text or URL)</label>
+                        <textarea id="contentText" required placeholder="Enter content or paste URL"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload Content</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!token || !user || user.role !== 'faculty') {
+            window.location.href = '/';
+        }
+
+        document.getElementById('userName').textContent = user.full_name;
+
+        let mySubjects = [];
+        let studentsBySubject = {};
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'students') loadStudents();
+            if (tabName === 'grades') loadSubjectsForGrades();
+            if (tabName === 'attendance') loadSubjectsForAttendance();
+            if (tabName === 'content') loadSubjectsForContent();
+        }
+
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => alertDiv.innerHTML = '', 5000);
+        }
+
+        async function apiCall(endpoint, options = {}) {
+            const response = await fetch(endpoint, {
+                ...options,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+            return response;
+        }
+
+        async function loadStudents() {
+            try {
+                const response = await apiCall('/api/faculty/students');
+                const students = await response.json();
+                studentsBySubject = students;
+
+                const subjectNames = Object.keys(students);
+                
+                const html = subjectNames.length > 0 ? subjectNames.map(subject => `
+                    <div class="subject-section">
+                        <h3>${subject}</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${students[subject].map(s => `
+                                    <tr>
+                                        <td>${s.student_id}</td>
+                                        <td>${s.name}</td>
+                                        <td>${s.email}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `).join('') : '<p style="text-align: center; padding: 40px; color: rgba(255,255,255,0.5);">No students enrolled in your subjects yet</p>';
+
+                document.getElementById('studentsList').innerHTML = html;
+            } catch (error) {
+                document.getElementById('studentsList').innerHTML = '<p>Error loading students</p>';
+            }
+        }
+
+        async function loadSubjectsForGrades() {
+            try {
+                const response = await apiCall('/api/subjects');
+                const allSubjects = await response.json();
+                mySubjects = allSubjects.filter(s => s.faculty_id === user.id);
+
+                const select1 = document.getElementById('gradeSubject');
+                const select2 = document.getElementById('finalizeSubject');
+                
+                const options = '<option value="">-- Select Subject --</option>' + 
+                    mySubjects.map(s => `<option value="${s.id}">${s.name} (${s.code})</option>`).join('');
+                
+                select1.innerHTML = options;
+                select2.innerHTML = options;
+            } catch (error) {
+                console.error('Error loading subjects');
+            }
+        }
+
+        async function loadStudentsForSubject() {
+            const subjectId = document.getElementById('gradeSubject').value;
+            if (!subjectId) return;
+
+            try {
+                const response = await apiCall('/api/faculty/students');
+                const allStudents = await response.json();
+                
+                const subjectName = mySubjects.find(s => s.id == subjectId)?.name;
+                const students = allStudents[subjectName] || [];
+
+                const select = document.getElementById('gradeStudent');
+                select.innerHTML = '<option value="">-- Select Student --</option>' +
+                    students.map(s => `<option value="${s.student_id}">${s.name}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading students');
+            }
+        }
+
+        document.getElementById('gradeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                student_id: parseInt(document.getElementById('gradeStudent').value),
+                subject_id: parseInt(document.getElementById('gradeSubject').value),
+                marks: parseFloat(document.getElementById('marks').value)
+            };
+
+            try {
+                const response = await apiCall('/api/faculty/grades', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert('Grade added successfully!');
+                    document.getElementById('gradeForm').reset();
+                } else {
+                    showAlert(result.error || 'Failed to add grade', 'error');
+                }
+            } catch (error) {
+                showAlert('Error adding grade', 'error');
+            }
+        });
+
+        async function finalizeGrades() {
+            const subjectId = document.getElementById('finalizeSubject').value;
+            if (!subjectId) {
+                showAlert('Please select a subject', 'error');
+                return;
+            }
+
+            if (!confirm('Are you sure? After finalizing, grades cannot be edited unless re-evaluation is approved.')) {
+                return;
+            }
+
+            try {
+                const response = await apiCall('/api/faculty/finalize-grades', {
+                    method: 'POST',
+                    body: JSON.stringify({ subject_id: parseInt(subjectId) })
+                });
+
+                if (response.ok) {
+                    showAlert('Grades finalized successfully!');
+                } else {
+                    showAlert('Failed to finalize grades', 'error');
+                }
+            } catch (error) {
+                showAlert('Error finalizing grades', 'error');
+            }
+        }
+
+        async function loadSubjectsForAttendance() {
+            try {
+                const response = await apiCall('/api/subjects');
+                const allSubjects = await response.json();
+                mySubjects = allSubjects.filter(s => s.faculty_id === user.id);
+
+                const select = document.getElementById('attendanceSubject');
+                select.innerHTML = '<option value="">-- Select Subject --</option>' + 
+                    mySubjects.map(s => `<option value="${s.id}">${s.name} (${s.code})</option>`).join('');
+
+                document.getElementById('attendanceDate').valueAsDate = new Date();
+            } catch (error) {
+                console.error('Error loading subjects');
+            }
+        }
+
+        async function loadStudentsForAttendance() {
+            const subjectId = document.getElementById('attendanceSubject').value;
+            if (!subjectId) return;
+
+            try {
+                const response = await apiCall('/api/faculty/students');
+                const allStudents = await response.json();
+                
+                const subjectName = mySubjects.find(s => s.id == subjectId)?.name;
+                const students = allStudents[subjectName] || [];
+
+                const select = document.getElementById('attendanceStudent');
+                select.innerHTML = '<option value="">-- Select Student --</option>' +
+                    students.map(s => `<option value="${s.student_id}">${s.name}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading students');
+            }
+        }
+
+        document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                student_id: parseInt(document.getElementById('attendanceStudent').value),
+                subject_id: parseInt(document.getElementById('attendanceSubject').value),
+                date: document.getElementById('attendanceDate').value,
+                status: document.getElementById('attendanceStatus').value
+            };
+
+            try {
+                const response = await apiCall('/api/faculty/attendance', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showAlert('Attendance marked successfully!');
+                    document.getElementById('attendanceForm').reset();
+                    document.getElementById('attendanceDate').valueAsDate = new Date();
+                } else {
+                    showAlert('Failed to mark attendance', 'error');
+                }
+            } catch (error) {
+                showAlert('Error marking attendance', 'error');
+            }
+        });
+
+        async function loadSubjectsForContent() {
+            try {
+                const response = await apiCall('/api/subjects');
+                const allSubjects = await response.json();
+                mySubjects = allSubjects.filter(s => s.faculty_id === user.id);
+
+                const select = document.getElementById('contentSubject');
+                select.innerHTML = '<option value="">-- Select Subject --</option>' + 
+                    mySubjects.map(s => `<option value="${s.id}">${s.name} (${s.code})</option>`).join('');
+            } catch (error) {
+                console.error('Error loading subjects');
+            }
+        }
+
+        document.getElementById('contentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                subject_id: parseInt(document.getElementById('contentSubject').value),
+                title: document.getElementById('contentTitle').value,
+                content: document.getElementById('contentText').value
+            };
+
+            try {
+                const response = await apiCall('/api/faculty/course-content', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showAlert('Content uploaded successfully!');
+                    document.getElementById('contentForm').reset();
+                } else {
+                    showAlert('Failed to upload content', 'error');
+                }
+            } catch (error) {
+                showAlert('Error uploading content', 'error');
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
+        loadStudents();
+    </script>
+</body>
+</html>

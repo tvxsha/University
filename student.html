@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #141414;
+            color: #fff;
+        }
+
+        .navbar {
+            background: #000;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+            color: #5D3FD3;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logout-btn {
+            background: #5D3FD3;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: #4a32b8;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 50px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            border-bottom: 1px solid #333;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #808080;
+            transition: all 0.3s;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            color: #fff;
+            border-bottom-color: #5D3FD3;
+        }
+
+        .tab:hover {
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .card h2 {
+            margin-bottom: 25px;
+            color: #fff;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            background: #000;
+            font-weight: 600;
+            color: #b3b3b3;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            color: #fff;
+        }
+
+        tr:hover {
+            background: #222;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #5D3FD3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4a32b8;
+            transform: scale(1.02);
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .alert-error {
+            background: rgba(93, 63, 211, 0.15);
+            color: #5D3FD3;
+            border-left: 4px solid #5D3FD3;
+        }
+
+        .alert-success {
+            background: rgba(70, 179, 64, 0.2);
+            color: #46b340;
+            border-left: 4px solid #46b340;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #808080;
+            font-size: 18px;
+        }
+
+        .timetable-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .slot-card {
+            background: linear-gradient(135deg, #5D3FD3 0%, #4a32b8 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .slot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(93, 63, 211, 0.4);
+        }
+
+        .slot-card h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .slot-card p {
+            margin: 8px 0;
+            opacity: 0.95;
+            font-size: 15px;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .grade-a { background: #46b340; color: #000; }
+        .grade-b { background: #0080ff; color: #fff; }
+        .grade-c { background: #ffa500; color: #000; }
+        .grade-d { background: #5D3FD3; color: #fff; }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #b3b3b3;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #000;
+            color: #fff;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #5D3FD3;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .subject-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .subject-item {
+            padding: 20px;
+            background: #000;
+            border: 2px solid #333;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .subject-item:hover {
+            border-color: #5D3FD3;
+            background: #1a1a1a;
+        }
+
+        .subject-item label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .navbar {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>STUDENT PORTAL</h1>
+        <div class="user-info">
+            <span id="userName">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Sign Out</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('enroll')">Enroll Subjects</button>
+            <button class="tab" onclick="showTab('subjects')">My Subjects</button>
+            <button class="tab" onclick="showTab('timetable')">Timetable</button>
+            <button class="tab" onclick="showTab('grades')">Grades</button>
+            <button class="tab" onclick="showTab('attendance')">Attendance</button>
+            <button class="tab" onclick="showTab('reevaluation')">Re-evaluation</button>
+        </div>
+
+        <div id="alert"></div>
+
+        <!-- Enroll Subjects Tab -->
+        <div id="enroll" class="tab-content active">
+            <div class="card">
+                <h2>Available Subjects</h2>
+                <div id="availableSubjects" class="loading">Loading subjects...</div>
+                <button class="btn btn-primary" onclick="enrollSubjects()" style="margin-top: 20px;">Enroll in Selected Subjects</button>
+            </div>
+        </div>
+
+        <!-- My Subjects Tab -->
+        <div id="subjects" class="tab-content">
+            <div class="card">
+                <h2>Enrolled Subjects</h2>
+                <div id="enrolledSubjects" class="loading">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Timetable Tab -->
+        <div id="timetable" class="tab-content">
+            <div class="card">
+                <h2>My Timetable</h2>
+                <div id="timetableContent" class="loading">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Grades Tab -->
+        <div id="grades" class="tab-content">
+            <div class="card">
+                <h2>My Grades</h2>
+                <div id="gradesContent" class="loading">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Attendance Tab -->
+        <div id="attendance" class="tab-content">
+            <div class="card">
+                <h2>Attendance Records</h2>
+                <div id="attendanceContent" class="loading">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Re-evaluation Tab -->
+        <div id="reevaluation" class="tab-content">
+            <div class="card">
+                <h2>Submit Re-evaluation Request</h2>
+                <form id="reevalForm">
+                    <div class="form-group">
+                        <label>Select Subject</label>
+                        <select id="reevalSubject" required>
+                            <option value="">-- Select Subject --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Reason for Re-evaluation</label>
+                        <textarea id="reevalReason" required placeholder="Explain why you need re-evaluation..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!token || !user || user.role !== 'student') {
+            window.location.href = '/';
+        }
+
+        document.getElementById('userName').textContent = user.full_name;
+
+        let allSubjects = [];
+        let enrolledSubjectsList = [];
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'subjects') loadEnrolledSubjects();
+            if (tabName === 'timetable') loadTimetable();
+            if (tabName === 'grades') loadGrades();
+            if (tabName === 'attendance') loadAttendance();
+        }
+
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => alertDiv.innerHTML = '', 5000);
+        }
+
+        async function apiCall(endpoint, options = {}) {
+            const response = await fetch(endpoint, {
+                ...options,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+            return response;
+        }
+
+        async function loadAvailableSubjects() {
+            try {
+                const response = await apiCall('/api/subjects');
+                const subjects = await response.json();
+                allSubjects = subjects;
+
+                const html = subjects.map(s => `
+                    <div class="subject-item">
+                        <label>
+                            <input type="checkbox" class="subject-checkbox" value="${s.id}" id="sub${s.id}">
+                            <div>
+                                <strong style="font-size: 18px;">${s.name}</strong> (${s.code})
+                                <br><span style="color: #808080;">Credits: ${s.credits} | Slot: ${s.slot} | Faculty: ${s.faculty_name || 'Not assigned'}</span>
+                            </div>
+                        </label>
+                    </div>
+                `).join('');
+
+                document.getElementById('availableSubjects').innerHTML = html || '<p>No subjects available</p>';
+            } catch (error) {
+                document.getElementById('availableSubjects').innerHTML = '<p>Error loading subjects</p>';
+            }
+        }
+
+        async function enrollSubjects() {
+            const checkboxes = document.querySelectorAll('.subject-checkbox:checked');
+            const subjectIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+            if (subjectIds.length === 0) {
+                showAlert('Please select at least one subject', 'error');
+                return;
+            }
+
+            try {
+                const response = await apiCall('/api/student/enroll', {
+                    method: 'POST',
+                    body: JSON.stringify({ subject_ids: subjectIds })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('Enrolled successfully!');
+                    loadAvailableSubjects();
+                } else {
+                    showAlert(data.error || 'Enrollment failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Error enrolling in subjects', 'error');
+            }
+        }
+
+        async function loadEnrolledSubjects() {
+            try {
+                const response = await apiCall('/api/student/subjects');
+                const subjects = await response.json();
+                enrolledSubjectsList = subjects;
+
+                const html = subjects.length > 0 ? `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Code</th>
+                                <th>Credits</th>
+                                <th>Slot</th>
+                                <th>Faculty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${subjects.map(s => `
+                                <tr>
+                                    <td>${s.name}</td>
+                                    <td>${s.code}</td>
+                                    <td>${s.credits}</td>
+                                    <td>${s.slot}</td>
+                                    <td>${s.faculty_name || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 20px; font-size: 18px;"><strong>Total Credits: ${subjects.reduce((sum, s) => sum + s.credits, 0)}</strong></p>
+                ` : '<p style="text-align: center; padding: 40px; color: #808080;">No enrolled subjects yet</p>';
+
+                document.getElementById('enrolledSubjects').innerHTML = html;
+
+                const select = document.getElementById('reevalSubject');
+                select.innerHTML = '<option value="">-- Select Subject --</option>' + 
+                    subjects.map(s => `<option value="${s.subject_id}">${s.name}</option>`).join('');
+
+            } catch (error) {
+                document.getElementById('enrolledSubjects').innerHTML = '<p>Error loading subjects</p>';
+            }
+        }
+
+        async function loadTimetable() {
+            try {
+                const response = await apiCall('/api/student/timetable');
+                const timetable = await response.json();
+
+                const slots = Object.keys(timetable);
+                const html = slots.length > 0 ? `
+                    <div class="timetable-grid">
+                        ${slots.map(slot => `
+                            <div class="slot-card">
+                                <h3>Slot ${slot}</h3>
+                                ${timetable[slot].map(item => `
+                                    <p><strong>${item.subject}</strong></p>
+                                    <p>${item.code}</p>
+                                    <p>👨‍🏫 ${item.faculty || 'N/A'}</p>
+                                `).join('')}
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : '<p style="text-align: center; padding: 40px; color: #808080;">No timetable available. Please enroll in subjects first.</p>';
+
+                document.getElementById('timetableContent').innerHTML = html;
+            } catch (error) {
+                document.getElementById('timetableContent').innerHTML = '<p>Error loading timetable</p>';
+            }
+        }
+
+        async function loadGrades() {
+            try {
+                const response = await apiCall('/api/student/grades');
+                const grades = await response.json();
+
+                const html = grades.length > 0 ? `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Marks</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${grades.map(g => `
+                                <tr>
+                                    <td>${g.subject}</td>
+                                    <td>${g.marks}</td>
+                                    <td><span class="grade-badge grade-${g.grade[0].toLowerCase()}">${g.grade}</span></td>
+                                    <td>${g.is_final ? '✅ Final' : '⏳ Provisional'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                ` : '<p style="text-align: center; padding: 40px; color: #808080;">No grades available yet</p>';
+
+                document.getElementById('gradesContent').innerHTML = html;
+            } catch (error) {
+                document.getElementById('gradesContent').innerHTML = '<p>Error loading grades</p>';
+            }
+        }
+
+        async function loadAttendance() {
+            try {
+                const response = await apiCall('/api/student/attendance');
+                const attendance = await response.json();
+
+                const html = attendance.length > 0 ? `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${attendance.map(a => `
+                                <tr>
+                                    <td>${a.subject}</td>
+                                    <td>${a.date}</td>
+                                    <td><span style="color: ${a.status === 'present' ? '#46b340' : '#e50914'}; font-weight: 600;">
+                                        ${a.status.toUpperCase()}
+                                    </span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                ` : '<p style="text-align: center; padding: 40px; color: #808080;">No attendance records yet</p>';
+
+                document.getElementById('attendanceContent').innerHTML = html;
+            } catch (error) {
+                document.getElementById('attendanceContent').innerHTML = '<p>Error loading attendance</p>';
+            }
+        }
+
+        document.getElementById('reevalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const subjectId = document.getElementById('reevalSubject').value;
+            const reason = document.getElementById('reevalReason').value;
+
+            try {
+                const response = await apiCall('/api/student/reevaluation', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        subject_id: parseInt(subjectId),
+                        reason: reason
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('Re-evaluation request submitted successfully!');
+                    document.getElementById('reevalForm').reset();
+                } else {
+                    showAlert(data.error || 'Failed to submit request', 'error');
+                }
+            } catch (error) {
+                showAlert('Error submitting request', 'error');
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
+        loadAvailableSubjects();
+        loadEnrolledSubjects();
+    </script>
+</body>
+</html>
