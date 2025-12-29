@@ -1,69 +1,77 @@
 # University
 A comprehensive web-based university management system built with Flask and Python that streamlines academic operations for administrators, faculty, students, and parents.
-Key Features
-🔐 Authentication & Authorization
 
-JWT-based secure authentication
+**Key Features**
+1)Authentication & Authorization
 
-Role-Based Access Control (RBAC)
+2)JWT-based secure authentication
 
-Supported roles: Admin, Student, Faculty, Parent
+3)Role-Based Access Control (RBAC)
 
-Single role per user
+4)Supported roles: Admin, Student, Faculty, Parent
 
-Fully protected API endpoints
+5)Single role per user
 
-👑 Admin Dashboard
+6)Fully protected API endpoints
 
-User management and role assignment
+ **Admin Dashboard**
 
-Subject creation and faculty allocation
+1)User management and role assignment
 
-Approve / deny student re-evaluation requests
+2)Subject creation and faculty allocation
 
-Full CRUD operations on academic entities
+3)Approve / deny student re-evaluation requests
 
-🎓 Student Portal
+4)Full CRUD operations on academic entities
 
-Subject registration with intelligent slot clash detection
+**Student Portal**
 
-Credit limit enforcement (maximum 27 credits per semester)
+1)Subject registration with intelligent slot clash detection
 
-Automated timetable generation
+2)Credit limit enforcement (maximum 27 credits per semester)
 
-View grades, attendance, and course materials
+3)Automated timetable generation
 
-Submit re-evaluation requests
+4)View grades, attendance, and course materials
 
-👨‍🏫 Faculty Dashboard
+5)Submit re-evaluation requests
 
-Manage enrolled students
+**Faculty Dashboard**
 
-Add and update grades with re-evaluation workflow
+1)Manage enrolled students
 
-Mark and track attendance
+2)Add and update grades with re-evaluation workflow
 
-Upload and manage course content
+3)Mark and track attendance
 
-Finalize grades after re-evaluation period
+4)Upload and manage course content
 
-👨‍👩‍👧 Parent Portal
+5)Finalize grades after re-evaluation period
 
-View child’s timetable and class schedule
+**Parent Portal**
 
-Monitor academic performance and grades
+1)View child’s timetable and class schedule
 
-Track attendance records with detailed statistics
+2)Monitor academic performance and grades
 
-🛠️ Technical Stack
+3)Track attendance records with detailed statistics
+
+**Technical Stack**
 Layer	Technology
+
 Backend	Flask, SQLAlchemy
+
 Authentication	JWT (JSON Web Tokens)
+
 Database	SQLite (7 relational tables)
+
 Frontend	HTML5, CSS3, Vanilla JavaScript
+
 Architecture	RESTful APIs
+
 Design	Dark theme with glassmorphic UI
-📊 System Highlights
+
+**System Highlights**
 
 RESTful API architecture with 30+ endpoints
 
@@ -82,31 +90,44 @@ Complete CRUD operations for all entities
 📁 Project Structure
 University/
 ├── app.py                # Flask application entry point
+
 ├── config.py             # App configuration and secrets
+
 ├── models.py             # Database models (SQLAlchemy)
+
 ├── requirements.txt      # Python dependencies
+
 ├── templates/            # Frontend HTML files
+
 │   ├── index.html
+
 │   ├── admin.html
+
 │   ├── faculty.html
+
 │   ├── student.html
+
 │   └── parent.html
+
 └── static/               # CSS, JS, and assets
 
-⚙️ Installation & Setup
-1️⃣ Clone the repository
+ **Installation & Setup**
+ 
+1️)Clone the repository
+
 git clone https://github.com/tvxsha/University.git
 cd University
 
-2️⃣ Create and activate virtual environment
+2️) Create and activate virtual environment\
+
 python -m venv venv
 source venv/bin/activate    # Linux / macOS
 venv\Scripts\activate       # Windows
 
-3️⃣ Install dependencies
+3) Install dependencies
 pip install -r requirements.txt
 
-🚀 Run the Application
+4)Run the Application
 python app.py
 
 
@@ -114,7 +135,7 @@ The application will be available at:
 
 http://127.0.0.1:5000/
 
-🗃️ Database Overview
+**Database Overview**
 
 The system uses 7 relational tables, including:
 
@@ -134,7 +155,7 @@ Re-evaluation Requests
 
 All relationships are managed using SQLAlchemy ORM.
 
-🔒 Security Considerations
+**Security Considerations**
 
 JWT tokens for authentication
 
@@ -144,7 +165,7 @@ Secure grade modification and approval workflow
 
 Input validation at both frontend and backend
 
-🤝 Contributing
+**Contributing**
 
 Contributions are welcome!
 Feel free to open an issue or submit a pull request.
